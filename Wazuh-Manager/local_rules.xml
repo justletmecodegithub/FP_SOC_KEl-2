@@ -1,0 +1,59 @@
+<!-- ====================================================================
+     local_rules.xml  -  VM-Wazuh-Manager   (REVISI 5 - FINAL)
+     /var/ossec/etc/rules/local_rules.xml
+
+     Pelajaran: rule bawaan 31151 ("Multiple web 400/IP", 6 dalam 20s)
+     MEMONOPOLI stream 31101 -> rule custom yang ngitung 31101 mentah keserobot
+     (kekonsumsi / kalah level). Solusi: NUMPUK di atas 31151 yang sudah terbukti
+     nyala, bukan rebutan stream yang sama.
+
+     Hierarki:
+       31101  (bawaan) atomic web 4xx/404            -> per request
+       31151  (bawaan) 6+ web 4xx / 20s / IP sama    -> agregat
+       100112 (custom) relabel 31151 = grey-zone     -> FP + TP
+       100113 (custom) 100112 berulang 2x / 60s      -> DoS sustained (TP)
+
+     31101 tetap muncul (data atomik buat dataset). nikto/scan dan burst benign
+     sama-sama hasilkan banyak 404 -> dua-duanya bisa trip 100112 -> overlap
+     inilah yang dipisahkan ML lewat inter-arrival time.
+     ==================================================================== -->
+
+<group name="custom_web_attacks,">
+
+  <!-- GREY ZONE: relabel tiap 31151. Kadang TP (scan), kadang FP (burst benign). -->
+  <rule id="100112" level="6">
+    <if_sid>31151</if_sid>
+    <description>Custom: Elevated web request rate from $(srcip) (possible scan/burst)</description>
+    <group>dos,</group>
+    <mitre>
+      <id>T1499</id>
+    </mitre>
+  </rule>
+
+  <!-- CONFIDENT DoS: 100112 berulang 2x dalam 60s dari IP sama = flood sustained. -->
+  <rule id="100113" level="10" frequency="2" timeframe="60">
+    <if_matched_sid>100112</if_matched_sid>
+    <same_source_ip />
+    <description>Custom: DoS attack detected from $(srcip) - sustained high 4xx rate</description>
+    <group>dos,ddos,</group>
+    <mitre>
+      <id>T1499</id>
+    </mitre>
+  </rule>
+
+  <!-- PHISHING: Triggers on logs containing PHISHING_CHECK to evaluate URLs -->
+  <rule id="100120" level="6">
+    <match>PHISHING_CHECK</match>
+    <description>Custom: Phishing link verification request</description>
+    <group>phishing,</group>
+  </rule>
+
+  <!-- PHISHING WEB: Triggers on web access logs containing check= query parameter -->
+  <rule id="100121" level="6">
+    <if_group>web</if_group>
+    <regex>check=</regex>
+    <description>Custom: Phishing link verification request from web access log</description>
+    <group>phishing,web_logs,</group>
+  </rule>
+
+</group>
