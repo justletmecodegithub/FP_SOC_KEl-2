@@ -5,7 +5,16 @@ Sistem Security Operations Center (SOC) skala kecil yang menggabungkan Wazuh (SI
 Inti masalah yang diangkat: aturan deteksi berbasis rule sering memunculkan banyak alarm yang sebenarnya tidak berbahaya. Analis SOC kewalahan menyaringnya satu per satu (alert fatigue). Proyek ini menunjukkan bahwa untuk kelas alert yang ambigu, perilaku temporal sebuah sumber (seberapa cepat dan seteratur apa request datang) membawa sinyal yang cukup untuk memisahkan serangan otomatis dari aktivitas wajar — sesuatu yang tidak bisa dilakukan oleh level rule saja.
 
 ---
-
+# FP SOC KELOMPOK 2
+| Nama | NRP |
+| :---- | :---: |
+| Muhammad Fatihul Qolbi Ash Shiddiqi | 5027241023   |
+| Zein M Hasan | 5027241035 |
+| Oscaryavat Viryavan | 5027241053 |
+| Muhammad Ahsani Taqwiim Rakhman | 5027241099 |
+| Imam Mahmud Dalil Fauzan | 5027241100 |
+| Jofanka Al-Kautsar Pangestu Abady | 5027241107 |
+| Naufal Ardhana | 5027241118 |
 ## Daftar Isi
 
 1. [Ringkasan Sistem](#1-ringkasan-sistem)
