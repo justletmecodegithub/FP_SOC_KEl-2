@@ -1,0 +1,15 @@
+[Unit]
+Description=Wazuh ML Alert Classifier API
+After=network.target
+
+[Service]
+Type=simple
+User=azureuser
+WorkingDirectory=/home/azureuser/ml-api
+ExecStart=/home/azureuser/ml-api/venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000 --workers 2
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
